@@ -11,6 +11,7 @@
     "ccxws": "0.43.1",
     "dotenv": "10.0.0",
     "ethers": "^5.1.4",
+    "fireblocks-sdk": "^5.7.0",
     "glob": "7.1.7",
     "random-number-csprng": "1.0.2",
     "ts-node": "9.1.1",

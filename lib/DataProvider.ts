@@ -23,6 +23,7 @@ import {
   waitFinalize3Factory
 } from './utils'
 import Web3 from 'web3'
+import { rawFireblocksTransaction } from './fireblocks'
 
 let randomNumber = require('random-number-csprng')
 let yargs = require('yargs')
@@ -147,7 +148,7 @@ class DataProvider {
 
     try {
       // Here, instead of signing the transaction, send it to Fireblocks for signing and transmission
-      await this.sendToFireblocks(rawTx) // Implement this function
+      await rawFireblocksTransaction(fnToEncode.encodeABI())
       return true
     } catch (e: any) {
       // Handle errors here
@@ -157,10 +158,7 @@ class DataProvider {
     }
   }
 
-  // Implement this function to send the raw transaction to Fireblocks for signing and transmission
-  async sendToFireblocks(rawTx: any): Promise<void> {
-    // Use Fireblocks SDK to send the raw transaction for signing and transmission
-  }
+
 
   supportedSymbols() {
     return Array.from(this.symbol2Index.keys()).join(', ')
