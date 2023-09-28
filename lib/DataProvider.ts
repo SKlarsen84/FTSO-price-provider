@@ -134,7 +134,9 @@ class DataProvider {
 
   async signAndFinalize3(label: string, toAddress: string, fnToEncode: any, gas: string = '2500000'): Promise<boolean> {
     let nonce = await this.getNonce()
-    var tx = {
+
+    // Generate raw transaction
+    var rawTx = {
       from: this.account.address,
       to: toAddress,
       gas: gas,
@@ -142,30 +144,22 @@ class DataProvider {
       data: fnToEncode.encodeABI(),
       nonce: nonce
     }
-    var signedTx = await this.account.signTransaction(tx)
 
     try {
-      let receipt = await this.waitFinalize3(this.account.address, () =>
-        this.web3.eth.sendSignedTransaction(signedTx.rawTransaction!)
-      )
+      // Here, instead of signing the transaction, send it to Fireblocks for signing and transmission
+      await this.sendToFireblocks(rawTx) // Implement this function
       return true
     } catch (e: any) {
-      if (e.message.indexOf('Transaction has been reverted by the EVM') < 0) {
-        this.logger.error(`${label} | Nonce sent: ${nonce} | signAndFinalize3 error: ${e.message}`)
-        this.resetNonce()
-      } else {
-        fnToEncode
-          .call({ from: this.account.address })
-          .then((result: any) => {
-            throw Error('unlikely to happen: ' + JSON.stringify(result))
-          })
-          .catch((revertReason: any) => {
-            this.logger.error(`${label} | Nonce sent: ${nonce} | signAndFinalize3 error: ${revertReason}`)
-            this.resetNonce()
-          })
-      }
+      // Handle errors here
+      this.logger.error(`${label} | Nonce sent: ${nonce} | signAndFinalize3 error: ${e.message}`)
+      this.resetNonce()
       return false
     }
+  }
+
+  // Implement this function to send the raw transaction to Fireblocks for signing and transmission
+  async sendToFireblocks(rawTx: any): Promise<void> {
+    // Use Fireblocks SDK to send the raw transaction for signing and transmission
   }
 
   supportedSymbols() {
